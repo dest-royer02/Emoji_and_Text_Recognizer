@@ -17,18 +17,11 @@ from google.colab import drive
 drive.mount('/content/drive')
 
 model_text = load_model('/content/drive/My Drive/model_only_letters_byclass_1.h5',compile=True) #emnist letters
-model_emoji = load_model('/content/drive/My Drive/with_bitwise_and_thresh.h5',compile=True) #without aug
+model_emoji = load_model('/content/drive/My Drive/with_bitwise_and_thresh.h5',compile=True) #emoji
 
 # model = load_model('new_model_vedant_1.h5',compile=True)
 classes='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
-    
-
-# with_bitwise_and_thresh.h5   errors:   heart, croissant, sometimes cloud, segmentation fails many times
-# with_thresh_bitwise_aug       errors:    sun, cloud , croissant, heart, checkmark, smile
-# without_(bitwise_&&_thresh).h5   errors:    checkmark, cloud, heart, sun, croissant, smile
-# with_thresh     errors:    sun, cloud, checkmark, croissant, heart
-# with_thresh     errors:    sun, cloud, heart, checkmark, croissant, smile
-
+   
 
 def predict(image):
     image=cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
@@ -49,16 +42,16 @@ def predict(image):
         # p_avg =  np.mean(predictions)
         # print(p_max, p_min, p_avg)
         # print(predictions)
-
-        # print(p_max)
+        
+        
         if(p_max<0.95):
           result = np.argmax(model_emoji.predict(m))
           predictions = model_emoji.predict(m)
           flag=1
 
-        if(classes[result]=='v' or classes[result]=='V'): #confusion bw checkmark and v/V
+        if(classes[result]=='v' or classes[result]=='V'):
            result = np.argmax(model_emoji.predict(m))
-        elif( classes[result]=='Q'): #confusion bw smile/laugh and Q
+        elif( classes[result]=='Q'):
            result = np.argmax(model_emoji.predict(m))
         # else:
         if (flag==0):
@@ -75,9 +68,6 @@ def test():
         image=cv2.imread(i)
         captcha_decoded = predict(image)
         print(captcha_decoded)
-        # # results = model.predict(image)
-        # for r in captcha_decoded:
-        #     print(str(r))
 
 if __name__=='__main__':
     test()
